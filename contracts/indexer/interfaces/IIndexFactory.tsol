@@ -1,0 +1,27 @@
+pragma ever-solidity >=0.62.0;
+
+interface IIndexFactory {
+  /**
+   * @notice This event emits when Index is deployed
+   * @param index Index address
+   * @param indexedContract Indexed contract address
+   * @param indexCodeHash Hash of the Index code, that can be used to find Indexes with the same parameters
+   * @param saltKey The name of the salt parameters
+   * @param saltValue Parameters of the salt packed into cell
+   */
+  event IndexDeployed(address index, address indexedContract, uint256 indexCodeHash, string saltKey, TvmCell saltValue);
+
+  /**
+   * @notice Returns the code of the Index contract
+   * @return TvmCell representing the index code of the contract
+   */
+  function getIndexCode() external view responsible returns (TvmCell);
+
+  /**
+   * @notice Calculates and returns the code hash of the Index contract based on the provided salt parameters
+   * @param saltKey The name of the salt parameters
+   * @param saltValue Parameters of the salt packed into cell
+   * @return The calculated code hash for the Index contract
+   */
+  function resolveIndexCodeHash(string saltKey, TvmCell saltValue) external view responsible returns (uint256);
+}

@@ -1,0 +1,30 @@
+pragma ever-solidity >=0.62.0;
+
+pragma AbiHeader expire;
+pragma AbiHeader pubkey;
+
+interface IIndex {
+  /**
+   * @notice Get indexed contract
+   * @return address of the indexed contract
+   */
+  function getIndexedContract() external view responsible returns (address);
+
+  /**
+   * @notice Get IndexFactory address
+   * @return address of the IndexFactory contract
+   */
+  function getIndexFactory() external view responsible returns (address);
+
+  /**
+   * @notice Get code hash
+   * @return hash of the code
+   */
+  function getCodeHash() external view responsible returns (uint256);
+
+  /**
+   * @notice Destruct the contract
+   * @param gasReceiver Address to receive leftover gas from the destructed contract
+   */
+  function destruct(address gasReceiver) external;
+}

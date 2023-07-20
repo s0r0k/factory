@@ -1,0 +1,90 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"indexCode","type":"cell"},
+				{"name":"indexDeployValue","type":"uint128"},
+				{"name":"indexDestroyValue","type":"uint128"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deployInstance",
+			"inputs": [
+				{"name":"user","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getIndexCode",
+			"inputs": [
+				{"name":"answerId","type":"uint32"}
+			],
+			"outputs": [
+				{"name":"value0","type":"cell"}
+			]
+		},
+		{
+			"name": "resolveIndexCodeHash",
+			"inputs": [
+				{"name":"answerId","type":"uint32"},
+				{"name":"saltKey","type":"string"},
+				{"name":"saltValue","type":"cell"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "deploy_nonce",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"deploy_nonce","type":"uint128"}
+			]
+		},
+		{
+			"name": "instances_deployed",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"instances_deployed","type":"uint128"}
+			]
+		}
+	],
+	"data": [
+		{"key":1,"name":"deploy_nonce","type":"uint128"},
+		{"key":2,"name":"instanceCode","type":"cell"}
+	],
+	"events": [
+		{
+			"name": "IndexDeployed",
+			"inputs": [
+				{"name":"index","type":"address"},
+				{"name":"indexedContract","type":"address"},
+				{"name":"indexCodeHash","type":"uint256"},
+				{"name":"saltKey","type":"string"},
+				{"name":"saltValue","type":"cell"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"_indexDeployValue","type":"uint128"},
+		{"name":"_indexDestroyValue","type":"uint128"},
+		{"name":"_indexCode","type":"cell"},
+		{"name":"deploy_nonce","type":"uint128"},
+		{"name":"instanceCode","type":"cell"},
+		{"name":"instances_deployed","type":"uint128"}
+	]
+}

@@ -1,0 +1,62 @@
+pragma ever-solidity ^0.62.0;
+pragma AbiHeader expire;
+pragma AbiHeader pubkey;
+
+import "Instance.tsol";
+import "indexer/IndexFactory.tsol";
+
+contract Factory is IndexFactory {
+  uint128 public static deploy_nonce;
+  TvmCell static instanceCode;
+
+  uint128 public instances_deployed;
+
+  uint16 constant WRONG_PUBKEY = 1001;
+  uint16 constant LOW_VALUE = 1002;
+
+  uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
+  uint128 constant INSTANCE_DEPLOY_VALUE = 1 ton;
+  uint128 constant INDEX_DEPLOY_VALUE = 0.2 ton;
+
+  constructor(
+    TvmCell indexCode,
+    uint128 indexDeployValue,
+    uint128 indexDestroyValue
+  ) public IndexFactory(indexCode, indexDeployValue, indexDestroyValue) {
+    require(tvm.pubkey() != 0, WRONG_PUBKEY);
+    require(tvm.pubkey() == msg.pubkey(), WRONG_PUBKEY);
+
+    tvm.accept();
+  }
+
+  function _reserve() internal pure returns (uint128) {
+    return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
+  }
+
+  function deployInstance(address user) external {
+    require(msg.value >= INSTANCE_DEPLOY_VALUE, LOW_VALUE);
+
+    TvmCell stateInit = tvm.buildStateInit({
+      contr: Instance,
+      varInit: { nonce: instances_deployed, factory: address(this) },
+      pubkey: tvm.pubkey(),
+      code: instanceCode
+    });
+    instances_deployed += 1;
+
+    tvm.rawReserve(_reserve(), 0);
+
+    new Instance{ stateInit: stateInit, value: 0, wid: address(this).wid, flag: 128 }(user, msg.sender);
+
+    address instance_address = address(tvm.hash(stateInit));
+    deployInstanceIndex(instance_address, "recipient", user);
+    deployInstanceIndex(instance_address, "creator", msg.sender);
+  }
+
+  // Function to create custom indexes
+  function deployInstanceIndex(address instance, string saltName, address saltValue) internal view {
+    TvmBuilder builder;
+    builder.store(saltValue);
+    deployIndex(instance, saltName, builder.toCell());
+  }
+}

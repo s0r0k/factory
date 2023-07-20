@@ -1,0 +1,30 @@
+pragma ever-solidity ^0.62.0;
+pragma AbiHeader expire;
+
+
+contract Instance {
+  uint128 static nonce;
+  address static factory;
+
+  address user;
+  address creator;
+
+  uint16 constant NOT_FACTORY = 1001;
+
+  uint128 constant CONTRACT_MIN_BALANCE = 1 ton;
+
+  constructor(address _user, address _creator) public {
+    require(msg.sender == factory, NOT_FACTORY);
+
+    user = _user;
+    creator = _creator;
+  }
+
+  function getDetails() external view returns (address _user, address _creator, uint128 _nonce, address _factory) {
+    return (user, creator, nonce, factory);
+  }
+
+  function _reserve() internal pure virtual returns (uint128) {
+    return math.max(address(this).balance - msg.value, CONTRACT_MIN_BALANCE);
+  }
+}
